@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+// Этот класс нужен что бы подгружать данные. Вынеси из ViewController методы загрузки данных сюда.
+// WebManager сделай объектом viewModel. 
 class WebManager {
     
 }

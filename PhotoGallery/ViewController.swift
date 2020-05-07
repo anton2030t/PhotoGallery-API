@@ -17,10 +17,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //   Вынеси добавление GR в отдельные методы. Не нужно заполнять viewDidLoad
+        //   Для удобства делаешь extension с пометкой private и туда заносишь методы.
+        //   Либо внутри самого класса создаешь private методы
+        
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(longPressGestureRecognizer:)))
         tableView.addGestureRecognizer(longPressRecognizer)
         
-        
+        // Этого вообще здесь быть не должно. Просил сделать по архитектуре MVVM.
+        // ViewController это view, на его состояния реагирует view model, которая в свою очередь обращается к model.
+        // Пример в папке MVVM example
+        // Почитай побольше про архитектуры, зачем они нужны. Massive view controller
         let url = URL(string: "https://picsum.photos/v2/list?page=1&limit=20")!
         let session = URLSession.shared
         var request = URLRequest(url: url)
@@ -37,7 +44,8 @@ class ViewController: UIViewController {
             
             do {
                 if let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [[String:Any]] {
-                    
+                    //Почитай про Codable. Так данные не стоит парсить
+                    //У тебя должна быть моделька, что то типо PhotoModel, которую ты должен распарсить
                     self.dataArray = json as [[String : AnyObject]]
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
@@ -97,9 +105,13 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+        //Сделай отдельную ячейку, в которой ты будешь отображать имя автора и картинку.
         let cellIdentifier = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
+        
+        //Для загрузки изображения. Можешь использовать cocoaPods. Kingfisher.
+        //Более сложный способ, но в рамках задачи(не использовать сторонние либы).
+        //Сделать extension imageView. В который ты пробрасываешь url и он подгружает данные.
         if let urlString = dataArray[indexPath.row]["download_url"] as? String, let url = URL(string: urlString) {
             URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
                 if let data = data {

@@ -17,6 +17,9 @@
 		6C57DCB42461A4E9003A21AD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6C57DCB32461A4E9003A21AD /* Assets.xcassets */; };
 		6C57DCB72461A4E9003A21AD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6C57DCB52461A4E9003A21AD /* LaunchScreen.storyboard */; };
 		6C57DCC72461DB90003A21AD /* WebManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C57DCC62461DB90003A21AD /* WebManager.swift */; };
+		911BC7442464613800FBF8C3 /* MVVMViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911BC7432464613800FBF8C3 /* MVVMViewController.swift */; };
+		911BC7462464615300FBF8C3 /* MVVMViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911BC7452464615300FBF8C3 /* MVVMViewModel.swift */; };
+		911BC7482464627F00FBF8C3 /* MVVMModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 911BC7472464627E00FBF8C3 /* MVVMModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +35,9 @@
 		6C57DCB62461A4E9003A21AD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6C57DCB82461A4E9003A21AD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6C57DCC62461DB90003A21AD /* WebManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebManager.swift; sourceTree = "<group>"; };
+		911BC7432464613800FBF8C3 /* MVVMViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVVMViewController.swift; sourceTree = "<group>"; };
+		911BC7452464615300FBF8C3 /* MVVMViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVVMViewModel.swift; sourceTree = "<group>"; };
+		911BC7472464627E00FBF8C3 /* MVVMModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MVVMModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +70,7 @@
 		6C57DCA92461A4E3003A21AD /* PhotoGallery */ = {
 			isa = PBXGroup;
 			children = (
+				911BC73F246460E300FBF8C3 /* MVVMExample */,
 				6C57DCAA2461A4E3003A21AD /* AppDelegate.swift */,
 				6C57DCAC2461A4E3003A21AD /* SceneDelegate.swift */,
 				6C57DCAE2461A4E3003A21AD /* ViewController.swift */,
@@ -77,6 +84,40 @@
 				6C57DCB82461A4E9003A21AD /* Info.plist */,
 			);
 			path = PhotoGallery;
+			sourceTree = "<group>";
+		};
+		911BC73F246460E300FBF8C3 /* MVVMExample */ = {
+			isa = PBXGroup;
+			children = (
+				911BC7422464612100FBF8C3 /* Model */,
+				911BC7412464611B00FBF8C3 /* ViewModel */,
+				911BC7402464611000FBF8C3 /* View */,
+			);
+			path = MVVMExample;
+			sourceTree = "<group>";
+		};
+		911BC7402464611000FBF8C3 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				911BC7432464613800FBF8C3 /* MVVMViewController.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		911BC7412464611B00FBF8C3 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				911BC7452464615300FBF8C3 /* MVVMViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		911BC7422464612100FBF8C3 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				911BC7472464627E00FBF8C3 /* MVVMModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -151,9 +192,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				911BC7462464615300FBF8C3 /* MVVMViewModel.swift in Sources */,
 				6C57DCC72461DB90003A21AD /* WebManager.swift in Sources */,
 				6C57DCAF2461A4E3003A21AD /* ViewController.swift in Sources */,
+				911BC7442464613800FBF8C3 /* MVVMViewController.swift in Sources */,
 				6C1164DB2463FE670032FB55 /* DetailViewController.swift in Sources */,
+				911BC7482464627F00FBF8C3 /* MVVMModel.swift in Sources */,
 				6C1164DF246411590032FB55 /* ImageScrollView.swift in Sources */,
 				6C57DCAB2461A4E3003A21AD /* AppDelegate.swift in Sources */,
 				6C57DCAD2461A4E3003A21AD /* SceneDelegate.swift in Sources */,
