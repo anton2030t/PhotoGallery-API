@@ -9,8 +9,33 @@
 import Foundation
 import UIKit
 
-// Этот класс нужен что бы подгружать данные. Вынеси из ViewController методы загрузки данных сюда.
-// WebManager сделай объектом viewModel. 
 class WebManager {
+    
+//    func loadData(completion: @escaping (Image) -> Void) {
+//
+//        guard let url = URL(string: "https://picsum.photos/v2/list?page=1&limit=20") else { return }
+//
+//        let task = URLSession.shared.dataTask(with: url) { [weak self] data, _, error in
+//
+//            guard let data = data,
+//                error == nil else {
+//
+//                    return
+//            }
+//
+//            let decoder = JSONDecoder()
+//
+//            do {
+//                let model = try decoder.decode(Image.self, from: data)
+//                    completion(model)
+//                    print(model)
+//
+//            } catch {
+//                print("Error = \(error.localizedDescription)")
+//            }
+//        }
+//
+//        task.resume()
+//    }
     
 }
