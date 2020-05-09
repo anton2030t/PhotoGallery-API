@@ -99,13 +99,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         
         let cellIdentifier = "cell"
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
-        let image = images[indexPath.row]
-        let url = URL(string: image.downloadURL)!
+        let imageModel = images[indexPath.row]
+        let url = URL(string: imageModel.downloadURL)!
 
         URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
             if let data = data {
                 DispatchQueue.main.async {
                     cell?.imageView!.image = UIImage(data: data)
+                    imageModel.image = UIImage(data: data)
                 }
             }
         }.resume()
@@ -124,6 +125,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // detail image
+        let imageModel = images[indexPath.row]
+        let vc = DetailViewController()
+        vc.publicImage = imageModel.image
+        
+        navigationController?.pushViewController(vc, animated: true)
     }
     
 }
