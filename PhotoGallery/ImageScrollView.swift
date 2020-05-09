@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import Kingfisher
 
 class ImageScrollView: UIScrollView, UIScrollViewDelegate {
 
-    var imageZoomView: UIImageView!
+    let imageZoomView = UIImageView()
     
     lazy var zoomingTap: UITapGestureRecognizer = {
         let zoomingTap = UITapGestureRecognizer(target: self, action: #selector(handleZoomingTap))
@@ -25,19 +26,28 @@ class ImageScrollView: UIScrollView, UIScrollViewDelegate {
         self.showsVerticalScrollIndicator = false
         self.showsHorizontalScrollIndicator = false
         self.decelerationRate = UIScrollView.DecelerationRate.fast
+        
+        
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func set(imageURL: URL) {
+        imageZoomView.contentMode = .scaleAspectFit
+        imageZoomView.removeFromSuperview()
+        imageZoomView.kf.setImage(with: imageURL)
+        imageZoomView.frame = frame
+        addSubview(imageZoomView)
+        configurateFor(imageSize: CGSize(width: 300, height: 200))
+    }
+    
     func set(image: UIImage) {
-        
-        imageZoomView?.removeFromSuperview()
-        imageZoomView = nil
-        imageZoomView = UIImageView(image: image)
-        self.addSubview(imageZoomView)
-        
+        imageZoomView.removeFromSuperview()
+        imageZoomView.image = image
+        addSubview(imageZoomView)
         configurateFor(imageSize: image.size)
     }
     

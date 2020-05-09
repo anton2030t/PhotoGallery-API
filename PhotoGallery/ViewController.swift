@@ -16,6 +16,8 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    private let webManager = WebManager()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -24,31 +26,16 @@ class ViewController: UIViewController {
         //   Вынеси добавление GR в отдельные методы. Не нужно заполнять viewDidLoad
         //   Для удобства делаешь extension с пометкой private и туда заносишь методы.
         //   Либо внутри самого класса создаешь private методы
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(longPressGestureRecognizer:)))
-        tableView.addGestureRecognizer(longPressRecognizer)
-        
-        
+        setUpGR()
     }
     
     func response() {
-        
-        let jsonUrl = "https://picsum.photos/v2/list?page=1&limit=20"
-        guard let url = URL(string: jsonUrl) else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            guard let data = data else { return }
-            
-            do {
-                self.images = try JSONDecoder().decode([Image].self, from: data)
-                print(self.images)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            } catch let error {
-                print(error)
+        webManager.loadData(with: 1) { [weak self] (images) in
+            self?.images += images
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
             }
-            
-        }.resume()
+        }
     }
     
     
@@ -102,13 +89,8 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let image = images[indexPath.row]
         let url = URL(string: image.downloadURL)!
 
-        URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
-            if let data = data {
-                DispatchQueue.main.async {
-                    cell?.imageView!.image = UIImage(data: data)
-                }
-            }
-        }.resume()
+        cell?.imageView?.kf.setImage(with: url)
+        cell?.imageView?.contentMode = .scaleAspectFill
         
         return cell!
 
@@ -124,6 +106,16 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // detail image
+        let vc = DetailViewController()
+        vc.imageModel = images[indexPath.row]
+        navigationController?.pushViewController(vc, animated: true)
     }
     
+}
+
+private extension ViewController {
+    func setUpGR() {
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(longPressGestureRecognizer:)))
+        tableView.addGestureRecognizer(longPressRecognizer)
+    }
 }

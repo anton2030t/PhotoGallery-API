@@ -12,8 +12,12 @@ class DetailViewController: UIViewController {
     
     var imageScrollView: ImageScrollView!
 
+    var imageModel: Image?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = .white
         
         imageScrollView = ImageScrollView(frame: view.bounds)
         view.addSubview(imageScrollView)
@@ -23,8 +27,11 @@ class DetailViewController: UIViewController {
         let imagePath = Bundle.main.path(forResource: "cars", ofType: "jpg")!
         let image = UIImage(contentsOfFile: imagePath)!
         
-        self.imageScrollView.set(image: image)
-        
+        if let imagePath = imageModel?.downloadURL, let imageURL = URL(string: imagePath) {
+            self.imageScrollView.set(imageURL: imageURL)
+        } else {
+            self.imageScrollView.set(image: image)
+        }
     }
     
     func setupImageScrollView() {
