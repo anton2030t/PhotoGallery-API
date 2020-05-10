@@ -6,14 +6,20 @@
 //  Copyright © 2020 Anton Larchenko. All rights reserved.
 //
 
-import Foundation
+import UIKit
 
-struct Image: Codable {
+final class Image: Codable {
+    let id: String
     let author: String
     let downloadURL: String
+    let url: String
+    
+    var image: UIImage?
     
     enum CodingKeys: String, CodingKey {
-      case author = "author"
-      case downloadURL = "download_url"
+        case id = "id"
+        case author = "author"
+        case downloadURL = "download_url"
+        case url = "url"
     }
 }

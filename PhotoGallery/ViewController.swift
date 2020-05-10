@@ -7,48 +7,34 @@
 //
 
 import UIKit
-import Kingfisher
 
 class ViewController: UIViewController {
     
     var images = [Image]()
-    var myImage: UIImage?
+    let cellHeight = ImageCell()
     
     @IBOutlet weak var tableView: UITableView!
+    
+    private let webManager = WebManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.register(UINib(nibName: ImageCell.identifier, bundle: Bundle.main), forCellReuseIdentifier: ImageCell.identifier)
+        
         response()
         
-        //   Вынеси добавление GR в отдельные методы. Не нужно заполнять viewDidLoad
-        //   Для удобства делаешь extension с пометкой private и туда заносишь методы.
-        //   Либо внутри самого класса создаешь private методы
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(longPressGestureRecognizer:)))
-        tableView.addGestureRecognizer(longPressRecognizer)
-        
-        
+        setUpGR()
+
     }
     
     func response() {
-        
-        let jsonUrl = "https://picsum.photos/v2/list?page=1&limit=20"
-        guard let url = URL(string: jsonUrl) else { return }
-        
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            guard let data = data else { return }
-            
-            do {
-                self.images = try JSONDecoder().decode([Image].self, from: data)
-                print(self.images)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            } catch let error {
-                print(error)
+        webManager.loadData(with: 1) { [weak self] (images) in
+            self?.images += images
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
             }
-            
-        }.resume()
+        }
     }
     
     
@@ -97,33 +83,62 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cellIdentifier = "cell"
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
-        let image = images[indexPath.row]
-        let url = URL(string: image.downloadURL)!
+        let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier) as! ImageCell
+        let imageModel = images[indexPath.row]
+        let url = URL(string: imageModel.downloadURL)!
 
         URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
             if let data = data {
                 DispatchQueue.main.async {
-                    cell?.imageView!.image = UIImage(data: data)
+                    cell.myImageView.image = UIImage(data: data)
+                    imageModel.image = UIImage(data: data)
                 }
             }
         }.resume()
         
-        return cell!
+        cell.authorLabel.text = imageModel.author
+        cell.urlLabel.setTitle(imageModel.url, for: .normal)
+        cell.urlLabel.titleLabel?.lineBreakMode = .byWordWrapping
+        
+        return cell
 
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 250
+        return 300
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 250
+        
+        // Здесь я хотел сделать автоматическое вычисление
+        // высоты ячейки по высоте картинки
+        // но код ниже не работает, точнее ставится 300 просто.
+        var heightCell: CGFloat?
+        
+        if heightCell == nil {
+            heightCell = 300
+        } else {
+            heightCell = cellHeight.myImageView.image?.size.height
+
+        }
+        
+        return heightCell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // detail image
+
+        let imageModel = images[indexPath.row]
+        let vc = DetailViewController()
+        vc.publicImage = imageModel.image
+        
+        navigationController?.pushViewController(vc, animated: true)
     }
     
+}
+
+private extension ViewController {
+    func setUpGR() {
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(longPressGestureRecognizer:)))
+        tableView.addGestureRecognizer(longPressRecognizer)
+    }
 }

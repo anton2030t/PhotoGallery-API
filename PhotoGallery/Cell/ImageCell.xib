@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleAspectFit" selectionStyle="none" indentationWidth="10" reuseIdentifier="ImageCell" rowHeight="283" id="KGk-i7-Jjw" customClass="ImageCell" customModule="PhotoGallery" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="339" height="283"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="339" height="283"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="PQr-dw-mci">
+                        <rect key="frame" x="20" y="20" width="299" height="214"/>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Author" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5qz-60-ZPN">
+                        <rect key="frame" x="267.5" y="242" width="51.5" height="21"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ylE-SZ-OZ1">
+                        <rect key="frame" x="20" y="242" width="237.5" height="30"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <state key="normal" title="url"/>
+                        <connections>
+                            <action selector="urlButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="m0T-yv-9R2"/>
+                        </connections>
+                    </button>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="PQr-dw-mci" secondAttribute="trailing" constant="20" id="8CA-R1-Rci"/>
+                    <constraint firstAttribute="trailing" secondItem="5qz-60-ZPN" secondAttribute="trailing" constant="20" id="EIG-cU-sAJ"/>
+                    <constraint firstAttribute="bottom" secondItem="5qz-60-ZPN" secondAttribute="bottom" constant="20" id="PeH-Mi-5pX"/>
+                    <constraint firstItem="ylE-SZ-OZ1" firstAttribute="top" secondItem="PQr-dw-mci" secondAttribute="bottom" constant="8" id="QI6-P3-slb"/>
+                    <constraint firstItem="ylE-SZ-OZ1" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="ZlQ-7E-YCR"/>
+                    <constraint firstItem="PQr-dw-mci" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="20" id="p3z-oZ-c8k"/>
+                    <constraint firstItem="5qz-60-ZPN" firstAttribute="leading" secondItem="ylE-SZ-OZ1" secondAttribute="trailing" constant="10" id="v6J-Bc-yNn"/>
+                    <constraint firstItem="PQr-dw-mci" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="20" id="zDe-bT-siY"/>
+                    <constraint firstItem="5qz-60-ZPN" firstAttribute="top" secondItem="PQr-dw-mci" secondAttribute="bottom" constant="8" id="zUh-99-Uak"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <connections>
+                <outlet property="authorLabel" destination="5qz-60-ZPN" id="uDy-Wv-z3s"/>
+                <outlet property="myImageView" destination="PQr-dw-mci" id="mQ0-gf-1wV"/>
+                <outlet property="urlLabel" destination="ylE-SZ-OZ1" id="nb3-Yj-iXr"/>
+            </connections>
+            <point key="canvasLocation" x="65.94202898550725" y="80.691964285714278"/>
+        </tableViewCell>
+    </objects>
+</document>
