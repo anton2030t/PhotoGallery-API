@@ -8,56 +8,40 @@
 
 import UIKit
 
+// протокол для обновления detail
+protocol ViewControllerDelegate {
+    func update(with image: UIImage)
+}
+
+
+
 class ViewController: UIViewController {
     
-    var dataArray = [[String:AnyObject]]()
+    var images = [Image]()
+    let cellHeight = ImageCell()
     
     @IBOutlet weak var tableView: UITableView!
+    
+    private let webManager = WebManager()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //   Вынеси добавление GR в отдельные методы. Не нужно заполнять viewDidLoad
-        //   Для удобства делаешь extension с пометкой private и туда заносишь методы.
-        //   Либо внутри самого класса создаешь private методы
+        tableView.register(UINib(nibName: ImageCell.identifier, bundle: Bundle.main), forCellReuseIdentifier: ImageCell.identifier)
         
-        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(longPressGestureRecognizer:)))
-        tableView.addGestureRecognizer(longPressRecognizer)
+        response()
         
-        // Этого вообще здесь быть не должно. Просил сделать по архитектуре MVVM.
-        // ViewController это view, на его состояния реагирует view model, которая в свою очередь обращается к model.
-        // Пример в папке MVVM example
-        // Почитай побольше про архитектуры, зачем они нужны. Massive view controller
-        let url = URL(string: "https://picsum.photos/v2/list?page=1&limit=20")!
-        let session = URLSession.shared
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let task = session.dataTask(with: request as URLRequest, completionHandler: { data, response, error in
-            guard error == nil else {
-                return
+        setUpGR()
+
+    }
+    
+    func response() {
+        webManager.loadData(with: 1) { [weak self] (images) in
+            self?.images += images
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
             }
-            
-            guard let data = data else {
-                return
-            }
-            
-            do {
-                if let json = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [[String:Any]] {
-                    //Почитай про Codable. Так данные не стоит парсить
-                    //У тебя должна быть моделька, что то типо PhotoModel, которую ты должен распарсить
-                    self.dataArray = json as [[String : AnyObject]]
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                    print(json)
-                }
-            } catch let error {
-                print(error.localizedDescription)
-            }
-        })
-        task.resume()
-        
+        }
     }
     
     
@@ -77,7 +61,7 @@ class ViewController: UIViewController {
                     let ok = UIAlertAction(title: "OK", style: .destructive) { (action) in
 
                         self.tableView.performBatchUpdates({
-                            self.dataArray.remove(at: index.row)
+                            self.images.remove(at: index.row)
                             self.tableView.deleteRows(at: [index], with: .automatic)
                         }, completion: nil)
                         
@@ -101,39 +85,70 @@ class ViewController: UIViewController {
 extension ViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataArray.count
+        return images.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //Сделай отдельную ячейку, в которой ты будешь отображать имя автора и картинку.
-        let cellIdentifier = "cell"
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
         
-        //Для загрузки изображения. Можешь использовать cocoaPods. Kingfisher.
-        //Более сложный способ, но в рамках задачи(не использовать сторонние либы).
-        //Сделать extension imageView. В который ты пробрасываешь url и он подгружает данные.
-        if let urlString = dataArray[indexPath.row]["download_url"] as? String, let url = URL(string: urlString) {
-            URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
-                if let data = data {
-                    DispatchQueue.main.async {
-                        cell?.imageView!.image = UIImage(data: data)
-                    }
+        let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier) as! ImageCell
+        let imageModel = images[indexPath.row]
+        let url = URL(string: imageModel.downloadURL)!
+        
+        let webVC = WebViewController()
+        webVC.publicUrl = imageModel.url
+        
+        URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
+            if let data = data {
+                DispatchQueue.main.async {
+                    cell.myImageView.backgroundColor = .none
+                    cell.myImageView.image = UIImage(data: data)
+                    cell.activityIndicator.stopAnimating()
+                    cell.authorLabel.text = imageModel.author
+                    cell.urlLabel.setTitle(imageModel.url, for: .normal)
+                    imageModel.image = UIImage(data: data)
                 }
-            }.resume()
-        }
-        return cell!
+            }
+        }.resume()
+        
+        
+        return cell
+
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 250
+        return 300
     }
-
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 250
+        
+        // Здесь я хотел сделать автоматическое вычисление
+        // высоты ячейки по высоте картинки
+        // но код ниже не работает, точнее ставится 300 просто.
+        var heightCell: CGFloat?
+        
+        if heightCell == nil {
+            heightCell = 300
+        } else {
+            heightCell = cellHeight.myImageView.image?.size.height
+        }
+        
+        return heightCell!
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // detail image
+
+        let imageModel = images[indexPath.row]
+        let vc = DetailViewController()
+        vc.publicImage = imageModel.image
+        
+        navigationController?.pushViewController(vc, animated: true)
     }
     
+}
+
+private extension ViewController {
+    func setUpGR() {
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(longPressGestureRecognizer:)))
+        tableView.addGestureRecognizer(longPressRecognizer)
+    }
 }
