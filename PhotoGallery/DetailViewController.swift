@@ -23,9 +23,9 @@ class DetailViewController: UIViewController {
         setupImageScrollView()
         
         let image = UIImage(named: "oops")!
-        // Как сделать чтобы при появлении "oops" (т.е. пока картинка не загрузилась),
-        // на Detail автоматически поменялась картинка на скачанную вместо "oops"?
-        self.imageScrollView.set(image: publicImage ?? image)
+        
+        imageScrollView.set(image: publicImage ?? image)
+
     }
     
     func setupImageScrollView() {

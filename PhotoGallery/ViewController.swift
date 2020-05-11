@@ -8,6 +8,13 @@
 
 import UIKit
 
+// протокол для обновления detail
+protocol ViewControllerDelegate {
+    func update(with image: UIImage)
+}
+
+
+
 class ViewController: UIViewController {
     
     var images = [Image]()
@@ -86,19 +93,23 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: ImageCell.identifier) as! ImageCell
         let imageModel = images[indexPath.row]
         let url = URL(string: imageModel.downloadURL)!
-
+        
+        let webVC = WebViewController()
+        webVC.publicUrl = imageModel.url
+        
         URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
             if let data = data {
                 DispatchQueue.main.async {
+                    cell.myImageView.backgroundColor = .none
                     cell.myImageView.image = UIImage(data: data)
+                    cell.activityIndicator.stopAnimating()
+                    cell.authorLabel.text = imageModel.author
+                    cell.urlLabel.setTitle(imageModel.url, for: .normal)
                     imageModel.image = UIImage(data: data)
                 }
             }
         }.resume()
         
-        cell.authorLabel.text = imageModel.author
-        cell.urlLabel.setTitle(imageModel.url, for: .normal)
-        cell.urlLabel.titleLabel?.lineBreakMode = .byWordWrapping
         
         return cell
 
@@ -119,7 +130,6 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             heightCell = 300
         } else {
             heightCell = cellHeight.myImageView.image?.size.height
-
         }
         
         return heightCell!

@@ -13,11 +13,15 @@ class ImageCell: UITableViewCell {
     @IBOutlet weak var myImageView: UIImageView!
     @IBOutlet weak var authorLabel: UILabel!
     @IBOutlet weak var urlLabel: UIButton!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     static let identifier = "ImageCell"
     
     override func prepareForReuse() {
         super.prepareForReuse()
+        
+        activityIndicator.startAnimating()
+        myImageView.backgroundColor = .systemGroupedBackground
         
         myImageView.image = nil
         isHidden = false
@@ -37,8 +41,9 @@ class ImageCell: UITableViewCell {
     }
     
     @IBAction func urlButton(_ sender: UIButton) {
-       
-        // ???
+        let webVC = WebViewController()
+        webVC.publicUrl = urlLabel.titleLabel?.text
+        self.window?.rootViewController?.present(webVC, animated: true, completion: nil)
     }
     
 }
