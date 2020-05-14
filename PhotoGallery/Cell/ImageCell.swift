@@ -9,6 +9,10 @@
 import UIKit
 
 class ImageCell: UITableViewCell {
+        
+    var urlModel: String?
+    var task: URLSessionDataTask?
+    var webButton: (() -> ())?
     
     @IBOutlet weak var myImageView: UIImageView!
     @IBOutlet weak var authorLabel: UILabel!
@@ -27,6 +31,8 @@ class ImageCell: UITableViewCell {
         isHidden = false
         isSelected = false
         isHighlighted = false
+        
+        task?.cancel()
     }
     
     override func awakeFromNib() {
@@ -36,14 +42,11 @@ class ImageCell: UITableViewCell {
 
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
-
         // Configure the view for the selected state
     }
     
     @IBAction func urlButton(_ sender: UIButton) {
-        let webVC = WebViewController()
-        webVC.publicUrl = urlLabel.titleLabel?.text
-        self.window?.rootViewController?.present(webVC, animated: true, completion: nil)
+        webButton?()
     }
     
 }

@@ -8,11 +8,15 @@
 
 import UIKit
 
+protocol DetailViewControllerDelegate: class {
+    func update(with image: UIImage)
+}
+
 class DetailViewController: UIViewController {
-    
+        
     var imageScrollView: ImageScrollView!
     
-    public var publicImage: UIImage?
+    var publicImage: UIImage?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,9 +26,9 @@ class DetailViewController: UIViewController {
         view.addSubview(imageScrollView)
         setupImageScrollView()
         
-        let image = UIImage(named: "oops")!
+        let oopsImage = UIImage(named: "oops")!
         
-        imageScrollView.set(image: publicImage ?? image)
+        imageScrollView.set(image: publicImage ?? oopsImage)
 
     }
     
@@ -36,4 +40,11 @@ class DetailViewController: UIViewController {
         imageScrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
     }
 
+}
+
+extension DetailViewController: DetailViewControllerDelegate {
+    func update(with image: UIImage) {
+        guard isViewLoaded else { return }
+        imageScrollView.set(image: image)
+    }
 }
