@@ -8,21 +8,17 @@
 
 import UIKit
 
-// протокол для обновления detail
-protocol ViewControllerDelegate {
-    func update(with image: UIImage)
-}
-
-
-
 class ViewController: UIViewController {
     
+    var delegate: DetailViewControllerDelegate?
+    
     var images = [Image]()
-    let cellHeight = ImageCell()
     
     @IBOutlet weak var tableView: UITableView!
     
     private let webManager = WebManager()
+    
+    var pageCounter = 1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,10 +32,15 @@ class ViewController: UIViewController {
     }
     
     func response() {
-        webManager.loadData(with: 1) { [weak self] (images) in
+        webManager.loadData(with: pageCounter) { [weak self] (images) in
+            //Я тебе обозначил, что нужно прекращать загрузку, когда у нас данные уже не приходят.
+            //Здесь это никак не обрабатывается
             self?.images += images
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
+                if images.count != 0 {
+                    self?.pageCounter += 1
+                }
             }
         }
     }
@@ -94,22 +95,49 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let imageModel = images[indexPath.row]
         let url = URL(string: imageModel.downloadURL)!
         
-        let webVC = WebViewController()
-        webVC.publicUrl = imageModel.url
-        
-        URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
-            if let data = data {
-                DispatchQueue.main.async {
-                    cell.myImageView.backgroundColor = .none
-                    cell.myImageView.image = UIImage(data: data)
-                    cell.activityIndicator.stopAnimating()
-                    cell.authorLabel.text = imageModel.author
-                    cell.urlLabel.setTitle(imageModel.url, for: .normal)
-                    imageModel.image = UIImage(data: data)
+        if let image = imageModel.image {
+            //#1 Одинаковый код
+            cell.myImageView.backgroundColor = .none
+            cell.myImageView?.image = image
+            cell.activityIndicator.stopAnimating()
+            cell.authorLabel.text = imageModel.author
+            cell.urlModel = imageModel.url
+            cell.urlLabel.setTitle(cell.urlModel, for: .normal)
+        } else {
+            // [weak self] здесь
+            cell.task = URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
+                if let data = data, let imageData = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        //#1 Одинаковый код
+                        //Здесь только картинку выставляй, а все остальное вынеси за запрос
+                        cell.myImageView.backgroundColor = .none
+                        cell.myImageView.image = imageData
+                        cell.activityIndicator.stopAnimating()
+                        cell.authorLabel.text = imageModel.author
+                        cell.urlModel = imageModel.url
+                        cell.urlLabel.setTitle(cell.urlModel, for: .normal)
+                        imageModel.image = imageData
+                        
+                        self.delegate?.update(with: imageData)
+                    }
                 }
             }
-        }.resume()
+            cell.task?.resume()
+            
+        }
         
+        //Не надо использовать unowned. Пользуйся опционалами. unowned - риск краша.
+        cell.webButton = { [unowned self] in
+            let vc = WebViewController()
+            if cell.urlModel != nil {
+                vc.publicUrl = cell.urlModel
+                self.present(vc, animated: true, completion: nil)
+            }
+        }
+        
+        if indexPath.row == images.count - 1 {
+            response()
+        }
         
         return cell
 
@@ -120,19 +148,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        
-        // Здесь я хотел сделать автоматическое вычисление
-        // высоты ячейки по высоте картинки
-        // но код ниже не работает, точнее ставится 300 просто.
-        var heightCell: CGFloat?
-        
-        if heightCell == nil {
-            heightCell = 300
-        } else {
-            heightCell = cellHeight.myImageView.image?.size.height
-        }
-        
-        return heightCell!
+        return 300
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -140,8 +156,19 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let imageModel = images[indexPath.row]
         let vc = DetailViewController()
         vc.publicImage = imageModel.image
+        delegate = vc
         
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let rotationTransform = CATransform3DTranslate(CATransform3DIdentity, -500, 10, 0)
+        cell.layer.transform = rotationTransform
+        
+        UIView.animate(withDuration: 1.0) {
+            cell.layer.transform = CATransform3DIdentity
+            cell.alpha = 1.0
+        }
     }
     
 }
