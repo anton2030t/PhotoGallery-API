@@ -33,6 +33,8 @@ class ViewController: UIViewController {
     
     func response() {
         webManager.loadData(with: pageCounter) { [weak self] (images) in
+            //Я тебе обозначил, что нужно прекращать загрузку, когда у нас данные уже не приходят.
+            //Здесь это никак не обрабатывается
             self?.images += images
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
@@ -94,6 +96,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let url = URL(string: imageModel.downloadURL)!
         
         if let image = imageModel.image {
+            //#1 Одинаковый код
             cell.myImageView.backgroundColor = .none
             cell.myImageView?.image = image
             cell.activityIndicator.stopAnimating()
@@ -101,9 +104,12 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             cell.urlModel = imageModel.url
             cell.urlLabel.setTitle(cell.urlModel, for: .normal)
         } else {
+            // [weak self] здесь
             cell.task = URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
                 if let data = data, let imageData = UIImage(data: data) {
                     DispatchQueue.main.async {
+                        //#1 Одинаковый код
+                        //Здесь только картинку выставляй, а все остальное вынеси за запрос
                         cell.myImageView.backgroundColor = .none
                         cell.myImageView.image = imageData
                         cell.activityIndicator.stopAnimating()
@@ -120,6 +126,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
         }
         
+        //Не надо использовать unowned. Пользуйся опционалами. unowned - риск краша.
         cell.webButton = { [unowned self] in
             let vc = WebViewController()
             if cell.urlModel != nil {
