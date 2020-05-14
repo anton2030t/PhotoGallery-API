@@ -12,6 +12,8 @@ class ImageCell: UITableViewCell {
         
     var urlModel: String?
     var task: URLSessionDataTask?
+    
+    //Перименуй название. Closure - не кнопка, а callback. webButtonCallBack
     var webButton: (() -> ())?
     
     @IBOutlet weak var myImageView: UIImageView!
