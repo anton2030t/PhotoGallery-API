@@ -49,7 +49,7 @@ class ViewController: UIViewController {
         
         if longPressGestureRecognizer.state == UIGestureRecognizer.State.began {
             
-            let touchPoint = longPressGestureRecognizer.location(in: self.view)
+            let touchPoint = longPressGestureRecognizer.location(in: self.tableView)
             if let index = tableView.indexPathForRow(at: touchPoint)  {
                 
                 let ac = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
