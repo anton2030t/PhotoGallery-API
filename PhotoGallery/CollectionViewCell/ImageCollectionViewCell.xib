@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ImageCollectionViewCell" id="gTV-IL-0wX" customClass="ImageCollectionViewCell" customModule="PhotoGallery" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="eDv-l4-z75">
+                        <rect key="frame" x="0.0" y="0.0" width="200" height="200"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                    </imageView>
+                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="osW-Gt-pnu">
+                        <rect key="frame" x="90" y="90" width="20" height="20"/>
+                    </activityIndicatorView>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="osW-Gt-pnu" firstAttribute="centerY" secondItem="eDv-l4-z75" secondAttribute="centerY" id="2T6-Rg-6tZ"/>
+                <constraint firstItem="eDv-l4-z75" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="cCB-KZ-VcU"/>
+                <constraint firstAttribute="trailing" secondItem="eDv-l4-z75" secondAttribute="trailing" id="iEu-Sx-Jml"/>
+                <constraint firstItem="eDv-l4-z75" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="mCe-f3-JlK"/>
+                <constraint firstAttribute="bottom" secondItem="eDv-l4-z75" secondAttribute="bottom" id="u2v-z5-0s6"/>
+                <constraint firstItem="osW-Gt-pnu" firstAttribute="centerX" secondItem="eDv-l4-z75" secondAttribute="centerX" id="yG4-Za-g8n"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <connections>
+                <outlet property="collectionActivityIndicator" destination="osW-Gt-pnu" id="Tbp-lU-kk4"/>
+                <outlet property="collectionImageView" destination="eDv-l4-z75" id="Gq3-Mj-SFU"/>
+            </connections>
+            <point key="canvasLocation" x="137.68115942028987" y="132.58928571428572"/>
+        </collectionViewCell>
+    </objects>
+</document>
