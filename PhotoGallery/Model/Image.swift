@@ -14,7 +14,13 @@ final class Image: Codable {
     let downloadURL: String
     let url: String
     
-    var image: UIImage?
+    var delegate: DetailViewControllerDelegate?
+    
+    var image: UIImage? {
+        didSet {
+            self.delegate?.update(with: image!)
+        }
+    }
     
     enum CodingKeys: String, CodingKey {
         case id = "id"

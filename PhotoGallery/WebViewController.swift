@@ -12,7 +12,7 @@ import WebKit
 class WebViewController: UIViewController, WKUIDelegate {
     
     var webView: WKWebView!
-    var publicUrl: String! //А если public URL забудешь просетить? Опционал должен быть
+    var publicUrl: String?
     
     override func loadView() {
         let webConfiguration = WKWebViewConfiguration()
@@ -23,7 +23,7 @@ class WebViewController: UIViewController, WKUIDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let url = URL(string: publicUrl)
+        let url = URL(string: publicUrl!)
         let request = URLRequest(url: url!)
         webView.load(request)
     }
