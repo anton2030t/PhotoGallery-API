@@ -32,7 +32,6 @@ class DetailViewController: UIViewController {
 
     }
     
-    //Вынеси сюда весь setUp imageScrollView помимо констрейнтов
     func setupImageScrollView() {
         imageScrollView.translatesAutoresizingMaskIntoConstraints = false
         imageScrollView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true

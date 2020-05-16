@@ -10,8 +10,6 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    var delegate: DetailViewControllerDelegate?
-    
     var images = [Image]()
     
     @IBOutlet weak var tableView: UITableView!
@@ -19,6 +17,7 @@ class ViewController: UIViewController {
     private let webManager = WebManager()
     
     var pageCounter = 1
+    var isEmpty = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,23 +27,23 @@ class ViewController: UIViewController {
         response()
         
         setUpGR()
-
+        
     }
     
     func response() {
+        guard (isEmpty == false) else { return }
         webManager.loadData(with: pageCounter) { [weak self] (images) in
-            //Я тебе обозначил, что нужно прекращать загрузку, когда у нас данные уже не приходят.
-            //Здесь это никак не обрабатывается
-            self?.images += images
+            if images.count != 0 {
+                self?.images += images
+                self?.pageCounter += 1
+            } else {
+                self?.isEmpty = true
+            }
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
-                if images.count != 0 {
-                    self?.pageCounter += 1
-                }
             }
         }
     }
-    
     
     @objc func longPress(longPressGestureRecognizer: UILongPressGestureRecognizer) {
         
@@ -60,7 +59,7 @@ class ViewController: UIViewController {
                     
                     let alertC = UIAlertController(title: nil, message: "Delete?", preferredStyle: .alert)
                     let ok = UIAlertAction(title: "OK", style: .destructive) { (action) in
-
+                        
                         self.tableView.performBatchUpdates({
                             self.images.remove(at: index.row)
                             self.tableView.deleteRows(at: [index], with: .automatic)
@@ -95,30 +94,23 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         let imageModel = images[indexPath.row]
         let url = URL(string: imageModel.downloadURL)!
         
-        if let image = imageModel.image {
-            //#1 Одинаковый код
+        func setupCell(image: UIImage) {
             cell.myImageView.backgroundColor = .none
-            cell.myImageView?.image = image
+            cell.myImageView.image = image
             cell.activityIndicator.stopAnimating()
             cell.authorLabel.text = imageModel.author
             cell.urlModel = imageModel.url
             cell.urlLabel.setTitle(cell.urlModel, for: .normal)
+        }
+        
+        if let image = imageModel.image {
+            setupCell(image: image)
         } else {
-            // [weak self] здесь
             cell.task = URLSession.shared.dataTask(with: url) { (data, urlResponse, error) in
                 if let data = data, let imageData = UIImage(data: data) {
                     DispatchQueue.main.async {
-                        //#1 Одинаковый код
-                        //Здесь только картинку выставляй, а все остальное вынеси за запрос
-                        cell.myImageView.backgroundColor = .none
-                        cell.myImageView.image = imageData
-                        cell.activityIndicator.stopAnimating()
-                        cell.authorLabel.text = imageModel.author
-                        cell.urlModel = imageModel.url
-                        cell.urlLabel.setTitle(cell.urlModel, for: .normal)
+                        setupCell(image: imageData)
                         imageModel.image = imageData
-                        
-                        self.delegate?.update(with: imageData)
                     }
                 }
             }
@@ -126,8 +118,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
             
         }
         
-        //Не надо использовать unowned. Пользуйся опционалами. unowned - риск краша.
-        cell.webButton = { [unowned self] in
+        cell.webButtonCallBack = { [unowned self] in
             let vc = WebViewController()
             if cell.urlModel != nil {
                 vc.publicUrl = cell.urlModel
@@ -140,7 +131,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         return cell
-
+        
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -152,12 +143,11 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-
+        
         let imageModel = images[indexPath.row]
         let vc = DetailViewController()
         vc.publicImage = imageModel.image
-        delegate = vc
-        
+        imageModel.delegate = vc
         navigationController?.pushViewController(vc, animated: true)
     }
     

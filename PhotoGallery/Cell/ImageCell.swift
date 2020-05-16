@@ -12,9 +12,7 @@ class ImageCell: UITableViewCell {
         
     var urlModel: String?
     var task: URLSessionDataTask?
-    
-    //Перименуй название. Closure - не кнопка, а callback. webButtonCallBack
-    var webButton: (() -> ())?
+    var webButtonCallBack: (() -> ())?
     
     @IBOutlet weak var myImageView: UIImageView!
     @IBOutlet weak var authorLabel: UILabel!
@@ -48,7 +46,7 @@ class ImageCell: UITableViewCell {
     }
     
     @IBAction func urlButton(_ sender: UIButton) {
-        webButton?()
+        webButtonCallBack?()
     }
     
 }
