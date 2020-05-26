@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15702" systemVersion="19D76" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ImageCoreData" representedClassName="ImageCoreData" syncable="YES">
+        <attribute name="author" optional="YES" attributeType="String"/>
+        <attribute name="downloadURL" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="image" optional="YES" attributeType="Binary"/>
+        <attribute name="url" optional="YES" attributeType="String"/>
+    </entity>
+    <elements>
+        <element name="ImageCoreData" positionX="-63" positionY="-18" width="128" height="118"/>
+    </elements>
+</model>

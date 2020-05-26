@@ -20,7 +20,7 @@ class CollectionViewController: UIViewController {
     var isEmpty = false
     
     var currentIndexPath: IndexPath?
-    let pressedDownTransform =  CGAffineTransform.identity.scaledBy(x: 0.9, y: 0.9)
+    let pressedDownTransform = CGAffineTransform.identity.scaledBy(x: 0.9, y: 0.9)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -90,14 +90,10 @@ class CollectionViewController: UIViewController {
         let indexPath = collectionView.indexPathForItem(at: point)
         
         if sender.state == .began, let indexPath = indexPath, let cell = collectionView.cellForItem(at: indexPath) {
-            // Initial press down, animate inward, keep track of the currently pressed index path
             
             animate(cell, to: pressedDownTransform)
             self.currentIndexPath = indexPath
         } else if sender.state == .changed {
-            // Touch moved
-            // If the touch moved outwidth the current cell, then animate the current cell back up
-            // Otherwise, animate down again
             
             if indexPath != self.currentIndexPath, let currentIndexPath = self.currentIndexPath, let cell = collectionView.cellForItem(at: currentIndexPath) {
                 if cell.transform != .identity {
@@ -109,7 +105,6 @@ class CollectionViewController: UIViewController {
                 }
             }
         } else if let currentIndexPath = currentIndexPath, let cell = collectionView.cellForItem(at: currentIndexPath) {
-            // Touch ended/cancelled, revert the cell to identity
             
             animate(cell, to: .identity)
             self.currentIndexPath = nil
