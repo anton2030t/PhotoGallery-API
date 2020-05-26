@@ -25,12 +25,10 @@ class PageViewController: UIPageViewController, UIPageViewControllerDataSource, 
     
     func viewControllerAtIndex(index: Int) -> UINavigationController! {
         
-        //first view controller = firstViewControllers navigation controller
         if index == 0 {
             return self.storyboard?.instantiateViewController(withIdentifier: "FirstNavigationController") as? UINavigationController
         }
         
-        //second view controller = secondViewController's navigation controller
         if index == 1 {
             return self.storyboard?.instantiateViewController(withIdentifier: "SecondNavigationController") as? UINavigationController
         }
@@ -43,12 +41,10 @@ class PageViewController: UIPageViewController, UIPageViewControllerDataSource, 
         let identifier = viewController.restorationIdentifier
         let index = self.identifiers.index(of: identifier!)
         
-        //if the index is the end of the array, return nil since we dont want a view controller after the last one
         if index == identifiers.count - 1 {
             return nil
         }
         
-        //increment the index to get the viewController after the current index
         self.index = self.index + 1
         return self.viewControllerAtIndex(index: self.index)
         
@@ -59,12 +55,10 @@ class PageViewController: UIPageViewController, UIPageViewControllerDataSource, 
         let identifier = viewController.restorationIdentifier
         let index = self.identifiers.index(of: identifier!)
         
-        //if the index is 0, return nil since we dont want a view controller before the first one
         if index == 0 {
             return nil
         }
         
-        //decrement the index to get the viewController before the current one
         self.index = self.index - 1
         return self.viewControllerAtIndex(index: self.index)
         
